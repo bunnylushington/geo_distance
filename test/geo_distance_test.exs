@@ -1,6 +1,11 @@
 defmodule GeoDistanceTest do
   use ExUnit.Case
 
+  test "m to k, k to m" do
+    assert Float.round(GeoDistance.miles_to_km(1), 6) == 1.609344
+    assert GeoDistance.km_to_miles(1) == 0.621371192237
+  end
+  
   # http://rosettacode.org/wiki/Haversine_formula#Erlang
   @a1 36.12
   @a2 33.94
@@ -9,7 +14,7 @@ defmodule GeoDistanceTest do
   @from {@a1, @o1}
   @to {@a2, @o2}
   @distance_km 2887.2599506071106
-  @distance_mi 1794.057
+  @distance_mi 1794.06
 
   
   # Carefully researched!
@@ -51,7 +56,7 @@ defmodule GeoDistanceTest do
   @mm_test_maxg 0.422
   @mm_test_ming -1.818
   @mm_test_distance 1000
-  
+
   test "min/max lat" do
     {minl, maxl} = GeoDistance.latitude_bounds(@mm_test_lat, @mm_test_distance)
     assert Float.round(minl, 4) == @mm_test_minl
@@ -59,11 +64,28 @@ defmodule GeoDistanceTest do
   end
 
   test "min/max long" do
-    {ming, maxg} = GeoDistance.longititude_bounds(@mm_test_lat, @mm_test_long,
+    {ming, maxg} = GeoDistance.longitude_bounds(@mm_test_lat, @mm_test_long,
                                                   @mm_test_distance)
     assert Float.round(maxg, 3) == @mm_test_maxg
     assert Float.round(ming, 3) == @mm_test_ming
   end
 
+  test "bounding coordinates" do
+    {{minl, maxl}, {ming, maxg}} =
+      GeoDistance.bounds_km(@mm_test_lat, @mm_test_long, @mm_test_distance)
+    assert Float.round(maxg, 3) == @mm_test_maxg
+    assert Float.round(ming, 3) == @mm_test_ming
+    assert Float.round(minl, 4) == @mm_test_minl
+    assert Float.round(maxl, 4) == @mm_test_maxl
+
+    test_distance_mi = GeoDistance.km_to_miles(@mm_test_distance)
+    
+    {{minl, maxl}, {ming, maxg}} =
+      GeoDistance.bounds_mi(@mm_test_lat, @mm_test_long, test_distance_mi)
+    assert Float.round(maxg, 3) == @mm_test_maxg
+    assert Float.round(ming, 3) == @mm_test_ming
+    assert Float.round(minl, 4) == @mm_test_minl
+    assert Float.round(maxl, 4) == @mm_test_maxl
+  end
   
 end

@@ -20,6 +20,7 @@ defmodule GeoDistance do
   """
 
   @radius 6372.8
+  @mk_conversion 0.621371192237
 
   defp haversine({lat_1, long_1}, {lat_2, long_2}) do
     v = :math.pi/180
@@ -35,6 +36,24 @@ defmodule GeoDistance do
     r * c
   end
 
+
+  @doc """ 
+  Computes {{min_lat, max_lat}, {min_long, max_long}} given
+  origin_lat, origin_long, and distance (in KM)
+  """
+  def bounds_km(origin_lat, origin_long, distance) do
+    {latitude_bounds(origin_lat, distance),
+     longitude_bounds(origin_lat, origin_long, distance)}
+  end
+
+  @doc """ 
+  Computes {{min_lat, max_lat}, {min_long, max_long}} given
+  origin_lat, origin_long, and distance (in miles)
+  """
+  def bounds_mi(origin_lat, origin_long, distance) do
+    bounds_km(origin_lat, origin_long, miles_to_km(distance))
+  end
+  
   @doc """
   Returns the {minimum,maximum} latitude of the bounding box.
   """
@@ -46,7 +65,7 @@ defmodule GeoDistance do
   @doc """
   Returns the {minimum,maximum} longititude of the bounding box.
   """
-  def longititude_bounds(origin_lat, origin_long, distance) do
+  def longitude_bounds(origin_lat, origin_long, distance) do
     r = distance/@radius
     delta = :math.asin(:math.sin(r) / :math.cos(origin_lat))
     {(origin_long - delta), (origin_long + delta)}
@@ -61,7 +80,7 @@ defmodule GeoDistance do
   @doc """
   Returns distance between two points in miles.
   """
-  def mi(from, to), do: km(from, to) * 0.62137
+  def mi(from, to), do: km(from, to) |> km_to_miles
   def mi(la1, lo1, la2, lo2), do: mi({la1, lo1}, {la2, lo2})
 
   @doc """ 
@@ -82,4 +101,14 @@ defmodule GeoDistance do
     in_radius_mi?({la1, lo1}, {la2, lo2}, radius)
   end
 
+  @doc """
+  Converts KMs to miles.
+  """
+  def km_to_miles(x), do: x * @mk_conversion
+
+  @doc """
+  Converts miles to KMs.
+  """
+  def miles_to_km(x), do: x / @mk_conversion
+    
 end
