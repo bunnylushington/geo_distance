@@ -1,7 +1,6 @@
 defmodule GeoDistance do
 
   @moduledoc """
-
   Using the [Haversine
   formula](http://rosettacode.org/wiki/Haversine_formula#Erlang)
   calculate the distance between two point of latitude/longititude.  
@@ -13,6 +12,11 @@ defmodule GeoDistance do
   or
   
        ({from_lat, from_long}, {to_lat, to_long})
+
+  Latitude and Longitude bounding coordinates can be computed using
+  the [formulae
+  provided](http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates)
+  by Jan Philip Matuschek.
   """
 
   @radius 6372.8
@@ -31,6 +35,22 @@ defmodule GeoDistance do
     r * c
   end
 
+  @doc """
+  Returns the {minimum,maximum} latitude of the bounding box.
+  """
+  def latitude_bounds(origin_lat, distance) do
+    r = distance/@radius
+    {(origin_lat - r), (origin_lat + r)}
+  end
+
+  @doc """
+  Returns the {minimum,maximum} longititude of the bounding box.
+  """
+  def longititude_bounds(origin_lat, origin_long, distance) do
+    r = distance/@radius
+    delta = :math.asin(:math.sin(r) / :math.cos(origin_lat))
+    {(origin_long - delta), (origin_long + delta)}
+  end
 
   @doc """
   Returns distance between two points in KMs.
@@ -43,7 +63,6 @@ defmodule GeoDistance do
   """
   def mi(from, to), do: km(from, to) * 0.62137
   def mi(la1, lo1, la2, lo2), do: mi({la1, lo1}, {la2, lo2})
-
 
   @doc """ 
   Returns true if distance between from and to is within the specified

@@ -39,5 +39,31 @@ defmodule GeoDistanceTest do
     assert GeoDistance.in_radius_km?(@fortress, @spottedcat, 0.5)
     refute GeoDistance.in_radius_km?(@fortress, @stlawrence, 0.5)
   end
+
+
+  # See http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
+  # for a narrative of how this works and where these test cases are
+  # derived.
+  @mm_test_lat 1.3963
+  @mm_test_long -0.6981
+  @mm_test_maxl 1.5532
+  @mm_test_minl 1.2394
+  @mm_test_maxg 0.422
+  @mm_test_ming -1.818
+  @mm_test_distance 1000
+  
+  test "min/max lat" do
+    {minl, maxl} = GeoDistance.latitude_bounds(@mm_test_lat, @mm_test_distance)
+    assert Float.round(minl, 4) == @mm_test_minl
+    assert Float.round(maxl, 4) == @mm_test_maxl
+  end
+
+  test "min/max long" do
+    {ming, maxg} = GeoDistance.longititude_bounds(@mm_test_lat, @mm_test_long,
+                                                  @mm_test_distance)
+    assert Float.round(maxg, 3) == @mm_test_maxg
+    assert Float.round(ming, 3) == @mm_test_ming
+  end
+
   
 end

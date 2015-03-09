@@ -16,7 +16,7 @@ defmodule GeoDistance.Mixfile do
   defp package do
     [
         files: ["lib", "mix.exs", "README*", "LICENSE*", "test"],
-        contributors: ["Kevin Montuori", "Kocomojo, LLC"],
+        contributors: ["Kocomojo, LLC"],
         licenses: ["MIT"],
     ]
   end
