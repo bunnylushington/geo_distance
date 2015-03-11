@@ -47,16 +47,16 @@ defmodule GeoDistanceTest do
 
 
   # See http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
-  # for a narrative of how this works and where these test cases are
-  # derived.
-  @mm_test_lat 1.3963
-  @mm_test_long -0.6981
-  @mm_test_maxl 1.5532
-  @mm_test_minl 1.2394
-  @mm_test_maxg 0.422
-  @mm_test_ming -1.818
-  @mm_test_distance 1000
-
+  # for a narrative of how this works.  The examples were taken from
+  # https://www.briandunning.com/cf/1491 and rounded just a little.
+  @mm_test_lat  37.4064806
+  @mm_test_long -121.984204
+  @mm_test_maxl 37.4155
+  @mm_test_minl 37.3975
+  @mm_test_maxg -121.9729
+  @mm_test_ming -121.9955
+  @mm_test_distance 1.0
+  
   test "min/max lat" do
     {minl, maxl} = GeoDistance.latitude_bounds(@mm_test_lat, @mm_test_distance)
     assert Float.round(minl, 4) == @mm_test_minl
@@ -66,15 +66,15 @@ defmodule GeoDistanceTest do
   test "min/max long" do
     {ming, maxg} = GeoDistance.longitude_bounds(@mm_test_lat, @mm_test_long,
                                                   @mm_test_distance)
-    assert Float.round(maxg, 3) == @mm_test_maxg
-    assert Float.round(ming, 3) == @mm_test_ming
+    assert Float.round(maxg, 4) == @mm_test_maxg
+    assert Float.round(ming, 4) == @mm_test_ming
   end
 
   test "bounding coordinates" do
     {{minl, maxl}, {ming, maxg}} =
       GeoDistance.bounds_km(@mm_test_lat, @mm_test_long, @mm_test_distance)
-    assert Float.round(maxg, 3) == @mm_test_maxg
-    assert Float.round(ming, 3) == @mm_test_ming
+    assert Float.round(maxg, 4) == @mm_test_maxg
+    assert Float.round(ming, 4) == @mm_test_ming
     assert Float.round(minl, 4) == @mm_test_minl
     assert Float.round(maxl, 4) == @mm_test_maxl
 
@@ -82,10 +82,10 @@ defmodule GeoDistanceTest do
     
     {{minl, maxl}, {ming, maxg}} =
       GeoDistance.bounds_mi(@mm_test_lat, @mm_test_long, test_distance_mi)
-    assert Float.round(maxg, 3) == @mm_test_maxg
-    assert Float.round(ming, 3) == @mm_test_ming
+    assert Float.round(maxg, 4) == @mm_test_maxg
+    assert Float.round(ming, 4) == @mm_test_ming
     assert Float.round(minl, 4) == @mm_test_minl
     assert Float.round(maxl, 4) == @mm_test_maxl
   end
-  
+
 end
