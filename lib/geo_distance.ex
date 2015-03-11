@@ -57,10 +57,14 @@ defmodule GeoDistance do
 
   @doc "Returns distance between two points in KMs."
   def km(from, to), do: haversine(from, to)
+
+  @doc "Returns distance between two points in KMs."
   def km(la1, lo1, la2, lo2), do: km({la1, lo1}, {la2, lo2})
 
   @doc "Returns distance between two points in miles."
   def mi(from, to), do: km(from, to) |> km_to_miles
+
+  @doc "Returns distance between two points in miles."
   def mi(la1, lo1, la2, lo2), do: mi({la1, lo1}, {la2, lo2})
 
   @doc """ 
