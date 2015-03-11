@@ -55,25 +55,35 @@ defmodule GeoDistance do
     {r2d(d2r(origin_long) - delta), r2d(d2r(origin_long) + delta)}
   end
 
-  @doc "Returns distance between two points in KMs."
+  @doc """
+  Returns distance between two points in KMs.  
+
+  From and to are 2-tuples {lat, long}.
+  """
   def km(from, to), do: haversine(from, to)
 
   @doc "Returns distance between two points in KMs."
-  def km(la1, lo1, la2, lo2), do: km({la1, lo1}, {la2, lo2})
+  def km(lat1, long1, lat2, long2), do: km({lat1, long1}, {lat2, long2})
 
-  @doc "Returns distance between two points in miles."
+  @doc """
+  Returns distance between two points in miles.
+ 
+  From and to are 2-tuples {lat, long}.
+  """
   def mi(from, to), do: km(from, to) |> km_to_miles
 
   @doc "Returns distance between two points in miles."
-  def mi(la1, lo1, la2, lo2), do: mi({la1, lo1}, {la2, lo2})
+  def mi(lat1, long1, lat2, long2), do: mi({lat1, long1}, {lat2, long2})
 
   @doc """ 
   Returns true if distance between from and to is within the specified
   radius (measured in KMs).
   """
   def in_radius_km?(from, to, radius), do: km(from, to) < radius
-  def in_radius_km?(la1, lo1, la2, lo2, radius) do
-    in_radius_km?({la1, lo1}, {la2, lo2}, radius)
+
+  @doc "Same as `in_radius_km?/3`."
+  def in_radius_km?(lat1, long1, lat2, long2, radius) do
+    in_radius_km?({lat1, long1}, {lat2, long2}, radius)
   end
 
   @doc """
@@ -81,12 +91,18 @@ defmodule GeoDistance do
   specified radius (measured in miles).  
   """
   def in_radius_mi?(from, to, radius), do: mi(from, to) < radius
-  def in_radius_mi?(la1, lo1, la2, lo2, radius) do
-    in_radius_mi?({la1, lo1}, {la2, lo2}, radius)
+
+  @doc "Same as `in_radius_mi?/3`."  
+  def in_radius_mi?(lat1, long1, lat2, long2, radius) do
+    in_radius_mi?({lat1, long1}, {lat2, long2}, radius)
   end
 
   @doc """
   Print boundry output in a format suitable for feeing to mapcustomizer.com.
+
+  Arguments are origin_lat, origin_long, and the output from `bounds_km/3`
+  or `bounds_mi/3`.
+
   """
   def mapcustomizer_format(lat, long, {{lat_min, lat_max},
                                        {lon_min, lon_max}}) do
